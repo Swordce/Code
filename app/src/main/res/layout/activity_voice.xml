@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_voice"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:navigationIcon="@drawable/ic_voice_close" />
+
+        <FrameLayout
+            android:id="@+id/fm_voice"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_bill"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="80dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.skyfishjy.library.RippleBackground
+                    android:id="@+id/content"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    app:rb_color="@color/color_62c2bf"
+                    app:rb_duration="2000"
+                    app:rb_radius="15dp"
+                    app:rb_rippleAmount="6"
+                    app:rb_scale="3">
+
+                    <ImageView
+                        android:id="@+id/centerImage"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_elves" />
+                </com.skyfishjy.library.RippleBackground>
+
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="30dp">
+
+                    <LinearLayout
+                        android:id="@+id/ll_voice_set"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="10dp"
+                        android:background="@color/color_564d5a"
+                        android:layout_marginBottom="15dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:layout_gravity="center_horizontal"
+                            android:textSize="16sp"
+                            android:textColor="@color/color_white"
+                            android:text="语音设置"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginStart="15dp"
+                            android:textSize="12sp"
+                            android:textColor="@color/color_white"
+                            android:text="选择消息提示方式"/>
+
+
+                        <CheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:text="语音"
+                            android:buttonTint="@color/color_white"
+                            style="@style/MyCheckBox"
+                            android:textColor="@color/color_white"/>
+
+                        <CheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            style="@style/MyCheckBox"
+                            android:buttonTint="@color/color_white"
+                            android:text="消息推送"
+                            android:textColor="@color/color_white"
+                            android:layout_marginBottom="15dp"/>
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/iv_set"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginStart="20dp"
+                        android:src="@drawable/ic_voice_set" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="30dp"
+                    android:orientation="vertical">
+
+                    <!-- This library requires pair of the VerticalSeekBar and VerticalSeekBarWrapper classes -->
+                    <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+                        android:id="@+id/seekbar_wrapper"
+                        android:layout_width="wrap_content"
+                        android:layout_height="150dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/voice_bg"
+                        android:visibility="gone">
+
+                        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
+                            android:id="@+id/mySeekBar"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:max="100"
+                            android:progress="0"
+                            android:progressBackgroundTint="@color/color_62c2bf"
+                            android:progressTint="@color/color_62c2bf"
+                            android:splitTrack="false"
+                            android:thumbTint="@color/color_62c2bf"
+                            app:seekBarRotation="CW270"
+                            app:tickMarkTint="@color/theme_color" /> <!-- Rotation: CW90 or CW270 -->
+                    </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
+
+                    <ImageView
+                        android:id="@+id/iv_voice_set"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/ic_control_voice" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
+

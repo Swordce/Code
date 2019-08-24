@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_weight="0"
+            />
+
+        <TextView
+            android:id="@+id/txtSelectedMonth"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:textColor="@color/slycalendar_defTextColor"
+            android:textSize="14sp"
+            tools:text="APRIL" />
+
+        <FrameLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp">
+
+        <TextView
+            android:id="@+id/day1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha=".7"
+            android:gravity="center"
+            tools:text="Sun"
+            android:textColor="@color/slycalendar_defTextColor"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/day2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha=".7"
+            android:gravity="center"
+            tools:text="Mon"
+            android:textColor="@color/slycalendar_defTextColor"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/day3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha=".7"
+            android:gravity="center"
+            tools:text="Tue"
+            android:textColor="@color/slycalendar_defTextColor"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/day4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha=".7"
+            android:gravity="center"
+            tools:text="Wed"
+            android:textColor="@color/slycalendar_defTextColor"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/day5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha=".7"
+            android:gravity="center"
+            tools:text="Thu"
+            android:textColor="@color/slycalendar_defTextColor"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/day6"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha=".7"
+            android:gravity="center"
+            tools:text="Fri"
+            android:textColor="@color/slycalendar_defTextColor"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/day7"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:alpha=".7"
+            android:gravity="center"
+            tools:text="Sat"
+            android:textColor="@color/slycalendar_defTextColor"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/calendarGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:horizontalSpacing="0dp"
+        android:numColumns="7"
+        android:verticalSpacing="0dp" />
+
+</LinearLayout>

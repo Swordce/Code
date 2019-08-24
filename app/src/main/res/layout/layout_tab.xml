@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_album_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:text="所有专辑"
+        android:textColor="@color/color_black"
+        android:textSize="15sp"
+        android:background="@drawable/tab_state"/>
+
+</LinearLayout>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_ebf5f7"
+        android:layout_above="@+id/tv_create_coupon"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_white">
+
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="创建优惠券"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+            </android.support.v7.widget.Toolbar>
+
+            <ImageView
+                android:id="@+id/iv_close"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="right|center"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/ic_close" />
+
+        </FrameLayout>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_white"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            app:tabBackground="@color/color_white"
+            app:tabIndicatorHeight="0dp"
+            app:tabGravity="center"
+            app:tabMode="fixed"/>
+
+        <com.cxmedia.goods.widgets.viewpager.MyViewPager
+            android:id="@+id/vp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_create_coupon"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:textSize="18sp"
+        android:background="@color/theme_color"
+        android:textColor="@color/color_white"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:gravity="center"
+        android:text="立即发放"/>
+
+</RelativeLayout>
