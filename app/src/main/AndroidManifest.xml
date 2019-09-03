@@ -117,6 +117,24 @@
         <activity android:name=".ui.home.activity.OpenFaceVerificationActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.user.activity.LifeSettingActivity" />
+        <service android:name=".Jpush.JPushService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":pushcore">
+            <intent-filter>
+                <action android:name="cn.jiguang.user.service.action" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".Jpush.JPushReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
+                <category android:name="您应用的包名" />
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="design_width_in_dp"

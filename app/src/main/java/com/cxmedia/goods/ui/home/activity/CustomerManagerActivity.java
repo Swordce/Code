@@ -138,6 +138,7 @@ public class CustomerManagerActivity extends BaseMvpActivity<CustomerPresenter> 
             case R.id.tv_edit:
                 CustomerListResult.ListBean bean = mList.get(position);
                 Intent intent = new Intent(this, EditCustomerActivity.class);
+                intent.putExtra("empNo",bean.getEmpNo());
                 intent.putExtra("name",bean.getEmpName());
                 intent.putExtra("type",bean.getEmpType());
                 intent.putExtra("phone",bean.getPhone());
@@ -173,6 +174,11 @@ public class CustomerManagerActivity extends BaseMvpActivity<CustomerPresenter> 
 
     @Override
     public void addCustomerResult(String result) {
+
+    }
+
+    @Override
+    public void editCustomerResult(String result) {
 
     }
 

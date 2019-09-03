@@ -72,6 +72,33 @@ public class CouponListResult {
         private String modifyEmp;
         private String poster;
         private String thumbnail;
+        private String getNum;
+        private String shareNum;
+        private String useNum;
+
+        public String getGetNum() {
+            return getNum;
+        }
+
+        public void setGetNum(String getNum) {
+            this.getNum = getNum;
+        }
+
+        public String getShareNum() {
+            return shareNum;
+        }
+
+        public void setShareNum(String shareNum) {
+            this.shareNum = shareNum;
+        }
+
+        public String getUseNum() {
+            return useNum;
+        }
+
+        public void setUseNum(String useNum) {
+            this.useNum = useNum;
+        }
 
         public String getRespCode() {
             return respCode;

@@ -91,6 +91,30 @@ public class CustomerPresenter extends BasePresenter<ICustomerView> {
         addSubscription(disposable);
     }
 
+    public void doEditCusomer(RequestBody body) {
+        Disposable disposable = ApiService.getApi().editCustomer(body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        String result = responseBody.string();
+                        CommonResult response = new Gson().fromJson(result,CommonResult.class);
+                        if(Contents.SUCCESS_CODE.equals(response.getRespCode())) {
+                            baseview.editCustomerResult("修改成功");
+                        }else {
+                            throw new Exception(response.getRespMsg());
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        baseview.customerErrorResult(throwable.getMessage());
+                    }
+                });
+        addSubscription(disposable);
+    }
+
 
     public void doSearchCustomer(RequestBody body) {
         Disposable disposable = ApiService.getApi().searchEmp(body)

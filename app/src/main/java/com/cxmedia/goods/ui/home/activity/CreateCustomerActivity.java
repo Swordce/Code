@@ -100,6 +100,11 @@ public class CreateCustomerActivity extends BaseMvpActivity<CustomerPresenter> i
     }
 
     @Override
+    public void editCustomerResult(String result) {
+
+    }
+
+    @Override
     public void deleteCustomerResult(String result) {
 
     }

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -18,35 +19,114 @@ public class RequestUtils {
     private static final String SIGN_METHOD = "00";
     private static final String VERSION = "1.0.0";
 
-    public static String oderRefundStr(String merId, String txnOrderId, String origTxnOrderId, String origTxnOrderTime, String txnOrderTime, String origTxnRespSsn, String txnAmt, String operId) {
-        TreeMap<String, String> orderMap = new TreeMap<>();
-        orderMap.put("encoding", ENCODING_TYPE);
-        orderMap.put("signMethod", SIGN_METHOD);
-        orderMap.put("txnType", "6003");
-        orderMap.put("version", VERSION);
-        orderMap.put("merId", merId);
-        orderMap.put("txnOrderId", txnOrderId);
-        orderMap.put("origTxnOrderId", origTxnOrderId);
-        orderMap.put("origTxnOrderTime", origTxnOrderTime);
-        orderMap.put("txnOrderTime", txnOrderTime);
-        orderMap.put("origTxnRespSsn", origTxnRespSsn);
-        orderMap.put("txnAmt", txnAmt);
-        orderMap.put("operId", operId);
-        return requestStr(orderMap);
+    //消息通知
+    //消息通知列表
+    public static TreeMap<String,String> messageInfoList(String pageNum,String limit) {
+        TreeMap<String,String> msgMap = new TreeMap<>();
+        msgMap.put("pageNum",pageNum);
+        msgMap.put("limit",limit);
+        return msgMap;
+    }
+    //消息通知详情
+    public static TreeMap<String,String> messageDetail(String id) {
+        TreeMap<String,String> msgMap = new TreeMap<>();
+        msgMap.put("id",id);
+        return msgMap;
     }
 
-    public static String oderQueryStr(String merId, String origTxnOrderId, String origTxnOrderTime) {
-        TreeMap<String, String> orderMap = new TreeMap<>();
-        orderMap.put("encoding", ENCODING_TYPE);
-        orderMap.put("signMethod", SIGN_METHOD);
-        orderMap.put("txnType", "6004");
-        orderMap.put("version", VERSION);
-        orderMap.put("merId", merId);
-        orderMap.put("origTxnOrderId", origTxnOrderId);
-        orderMap.put("origTxnOrderTime", origTxnOrderTime);
-        return requestStr(orderMap);
+    //个人中心
+    //上传app
+    public static TreeMap<String,String> saveAppVersion(String url,String name,String version,String status) {
+        TreeMap<String,String> userMap = new TreeMap<>();
+        userMap.put("url",url);
+        userMap.put("name",name);
+        userMap.put("version",version);
+        userMap.put("status",status);
+        return userMap;
+    }
+    //开通人脸登录、刷脸退款
+    public static TreeMap<String,String> saveFace(String faceScope,String file,String empNo,String verificationCode) {
+        TreeMap<String,String> userMap = new TreeMap<>();
+        userMap.put("faceScope",faceScope);//1--登录,2--退款，3---全部
+        userMap.put("file",file);
+        userMap.put("empNo",empNo);
+        userMap.put("verificationCode",verificationCode);
+        return userMap;
     }
 
+
+    //发送验证码
+    public static TreeMap<String,String> sendSmsCode(String empNo) {
+        TreeMap<String,String> orderMap = new TreeMap<>();
+        orderMap.put("empNo",empNo);
+        return orderMap;
+    }
+
+    //人脸识别退款
+    public static TreeMap<String,String> orderFaceRefund(File file, String memberId, String orgTermOrdId,String ordAmt,String transDate ) {
+        TreeMap<String,String> orderMap = new TreeMap<>();
+        orderMap.put("file",file.toString());
+        orderMap.put("memberId",memberId);
+        orderMap.put("orgTermOrdId",orgTermOrdId);
+        orderMap.put("ordAmt",ordAmt);
+        orderMap.put("transDate",transDate);
+        return orderMap;
+    }
+
+    //忘记交易密码--设置新的交易密码
+    public static TreeMap<String,String> orderResetOrderPassword(String verificationCode,String empNo,String refundPassword ) {
+        TreeMap<String,String> orderMap = new TreeMap<>();
+        orderMap.put("verificationCode",verificationCode);
+        orderMap.put("empNo",empNo);
+        orderMap.put("refundPassword",refundPassword);
+        return orderMap;
+    }
+
+    //退款密码退款
+    public static TreeMap<String,String> orderPasswordRefund(String refundPassword,String empNo,String memberId,String orgTermOrdId,String ordAmt,String transDate) {
+        TreeMap<String,String> orderMap = new TreeMap<>();
+        orderMap.put("refundPassword",refundPassword);
+        orderMap.put("empNo",empNo);
+        orderMap.put("memberId",memberId);
+        orderMap.put("orgTermOrdId",orgTermOrdId);
+        orderMap.put("ordAmt",ordAmt);
+        orderMap.put("transDate",transDate);
+        return orderMap;
+    }
+
+    //账单汇总统计
+    public static TreeMap<String,String> orderSettleList(String memberId,int pageNum,int limit,int payChannelType,String beginTransactionTime,String endTransactionTime) {
+        TreeMap<String,String> orderMap = new TreeMap<>();
+        orderMap.put("memberId",memberId);
+        orderMap.put("pageNum",pageNum+"");
+        orderMap.put("limit",limit+"");
+        orderMap.put("payChannelType",payChannelType+"");
+        orderMap.put("beginTransactionTime",beginTransactionTime);
+        orderMap.put("endTransactionTime",endTransactionTime);
+        return orderMap;
+    }
+
+    //订单详情
+    public static TreeMap<String,String> orderDetail(String orderNo) {
+        TreeMap<String,String> orderMap = new TreeMap<>();
+        orderMap.put("orderNo",orderNo);
+        return orderMap;
+    }
+
+    //订单列表
+    public static TreeMap<String,String> orderInfoList(String memberId,int pageNum,int limit,int payChannelType,String beginTransactionTime,String endTransactionTime) {
+        TreeMap<String,String> orderMap = new TreeMap<>();
+        orderMap.put("memberId",memberId);
+        orderMap.put("pageNum",pageNum+"");
+        orderMap.put("limit",limit+"");
+        orderMap.put("payChannerlType",payChannelType+"");//10--微信，20---支付宝
+        orderMap.put("beginTransactionTime",beginTransactionTime);
+        orderMap.put("endTransactionTime",endTransactionTime);
+        return orderMap;
+    }
+
+
+    //添加店员
     public static TreeMap<String, String> addCustomerStr(String currentEmpNo, String mchtNo, String empName, String empType, String phone, String haveCoupon, String haveRefund) {
         TreeMap<String, String> customerMap = new TreeMap<>();
         customerMap.put("currentEmpNo", currentEmpNo);
@@ -59,7 +139,8 @@ public class RequestUtils {
         return customerMap;
     }
 
-    public static String editCustomerStr(String empNo, String mchtNo, String empName, String empType, String phone, String currentEmpNo) {
+    //修改店员
+    public static TreeMap<String,String> editCustomerStr(String empNo, String mchtNo, String empName, String empType,String currentEmpNo) {
         TreeMap<String, String> customerMap = new TreeMap<>();
         customerMap.put("empNo", empNo);
         customerMap.put("mchtNo", mchtNo);
@@ -69,11 +150,8 @@ public class RequestUtils {
         if (!TextUtils.isEmpty(empType)) {
             customerMap.put("empType", empType);
         }
-        if (!TextUtils.isEmpty(phone)) {
-            customerMap.put("phone", phone);
-        }
         customerMap.put("currentEmpNo", currentEmpNo);
-        return requestStr(customerMap);
+        return customerMap;
     }
 
     public static TreeMap<String, String> searchCustomerStr(String mchtNo,String keyword) {
@@ -149,13 +227,12 @@ public class RequestUtils {
 
     public static String editCouponStr(String couponId, String mchtNo, String currentEmpNo, String couponType,
                                        String couponNum, String discount, String fullAmt, String subtractionAmt,
-                                       String effectiveDate, String expireDate) {
+                                       String effectiveDate, String expireDate,String thumbnail,String poster) {
         TreeMap<String, String> couponMap = new TreeMap<>();
-        couponMap.put("encoding", ENCODING_TYPE);
         couponMap.put("id", couponId);
         couponMap.put("mchtNo", mchtNo);
-        couponMap.put("signMethod", SIGN_METHOD);
-        couponMap.put("txnType", "5002");
+        couponMap.put("poster",poster);
+        couponMap.put("thumbnail",thumbnail);
         if (!TextUtils.isEmpty(currentEmpNo)) {
             couponMap.put("currentEmpNo", currentEmpNo);
         }
@@ -212,11 +289,11 @@ public class RequestUtils {
     public static TreeMap<String, String> editPasswordStr(String empNo, String newPassword) {
         TreeMap<String, String> passwordMap = new TreeMap<>();
         passwordMap.put("empNo", empNo);
-        passwordMap.put("newPassword", newPassword);
+        passwordMap.put("newPassword", md5(newPassword));
         return passwordMap;
     }
 
-    public static TreeMap<String, String> loginStr(String phone, String password) {
+    public static TreeMap<String, String> loginStr(String phone, String password,String registrationId) {
         TreeMap<String, String> loginMap = new TreeMap<>();
 //        loginMap.put("encoding", ENCODING_TYPE);
 //        loginMap.put("signMethod", SIGN_METHOD);
@@ -224,6 +301,7 @@ public class RequestUtils {
 //        loginMap.put("version", VERSION);
         loginMap.put("empNo", phone);
         loginMap.put("password", md5(password));
+        loginMap.put("registrationId",registrationId);
         return loginMap;
     }
 

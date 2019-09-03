@@ -15,6 +15,8 @@ import com.cxmedia.goods.utils.ExceptionHandler;
 import com.cxmedia.goods.utils.SharedPreferencesUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 
+import cn.jpush.android.api.JPushInterface;
+
 public class App extends Application {
 
     public static Context appContext;
@@ -24,6 +26,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         appContext = getApplicationContext();
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
         Cache.init(this);
         AppUtils.init(this);
         SharedPreferencesUtil.init(this, "user", MODE_PRIVATE);

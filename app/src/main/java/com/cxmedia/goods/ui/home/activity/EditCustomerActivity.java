@@ -13,8 +13,11 @@ import com.cxmedia.goods.R;
 import com.cxmedia.goods.ui.base.BaseActivity;
 import com.cxmedia.goods.ui.base.BaseMvpActivity;
 import com.cxmedia.goods.utils.AppManager;
+import com.cxmedia.goods.utils.Cache;
 import com.cxmedia.goods.utils.RequestUtils;
+import com.cxmedia.goods.utils.RetrofitFactory;
 import com.cxmedia.goods.utils.ToastUtils;
+import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.TreeMap;
@@ -49,15 +52,18 @@ public class EditCustomerActivity extends BaseMvpActivity<CustomerPresenter> imp
         String haveRefund = getIntent().getStringExtra("haveRefund");
 
         etCustomerName.setText(name);
-        etCustomerPhone.setText(phone);
+        etCustomerPhone.setText(empNo);
         etCustomerPosition.setText(type);
 
-        if(!TextUtils.isEmpty(haveCoupon) && "1".equals(haveCoupon)) {
+        if (!TextUtils.isEmpty(haveCoupon) && "1".equals(haveCoupon)) {
             cxCoupon.setChecked(true);
         }
-        if(!TextUtils.isEmpty(haveRefund) && "1".equals(haveRefund)) {
-            cxRefund.setChecked(false);
+        if (!TextUtils.isEmpty(haveRefund) && "1".equals(haveRefund)) {
+            cxRefund.setChecked(true);
         }
+        etCustomerPhone.setEnabled(false);
+        cxRefund.setEnabled(false);
+        cxCoupon.setEnabled(false);
     }
 
     @Override
@@ -78,14 +84,37 @@ public class EditCustomerActivity extends BaseMvpActivity<CustomerPresenter> imp
                 AppManager.getAppManager().finishActivity();
                 break;
             case R.id.tv_save:
-                ToastUtils.showShortToast(this,"开发中....");
-//                TreeMap<String,String> map = RequestUtils.editCustomerStr()
+                String name = etCustomerName.getText().toString();
+                String position = etCustomerPosition.getText().toString();
+                String phone = etCustomerPhone.getText().toString();
+                String coupon = cxCoupon.isChecked() ? "1" : "0";
+                String refund = cxRefund.isChecked() ? "1" : "0";
+                if (!TextUtils.isEmpty(name)) {
+                    if (!TextUtils.isEmpty(position)) {
+                        if (cxCoupon.isChecked() || cxRefund.isChecked()) {
+                            TreeMap<String, String> map = RequestUtils.editCustomerStr(empNo, (String) Cache.get("mchtNo"), name, position,(String) Cache.get("empNo"));
+                            customerPresenter.doEditCusomer(RetrofitFactory.getRequestBody(new Gson().toJson(map)));
+                        } else {
+                            ToastUtils.showShortToast(this, "请添加管理员权限");
+                        }
+
+                    } else {
+                        ToastUtils.showShortToast(this, "职称不能为空");
+                    }
+                } else {
+                    ToastUtils.showShortToast(this, "管理员名称不能为空");
+                }
                 break;
         }
     }
 
     @Override
     public void addCustomerResult(String result) {
+
+    }
+
+    @Override
+    public void editCustomerResult(String result) {
 
     }
 
@@ -101,12 +130,12 @@ public class EditCustomerActivity extends BaseMvpActivity<CustomerPresenter> imp
 
     @Override
     public void customerErrorResult(String error) {
-        ToastUtils.showShortToast(this,error);
+        ToastUtils.showShortToast(this, error);
     }
 
     @Override
     public void setPresenter(CustomerPresenter presenter) {
-        if(presenter == null) {
+        if (presenter == null) {
             customerPresenter = new CustomerPresenter();
             customerPresenter.attachView(this);
         }

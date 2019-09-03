@@ -15,6 +15,7 @@ import com.cxmedia.goods.ui.home.fragment.HomeFragment;
 import com.cxmedia.goods.ui.server.fragment.ServerFragment;
 import com.cxmedia.goods.ui.user.fragment.UserFragment;
 import com.cxmedia.goods.utils.AppManager;
+import com.cxmedia.goods.utils.Cache;
 import com.cxmedia.goods.widgets.viewpager.MyViewPager;
 import com.jaeger.library.StatusBarUtil;
 
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
                 mExitTime = System.currentTimeMillis();
             } else {
+                Cache.deleteAll();
                 AppManager.getAppManager().finishAllActivity();
                 AppManager.getAppManager().AppExit(this);
             }

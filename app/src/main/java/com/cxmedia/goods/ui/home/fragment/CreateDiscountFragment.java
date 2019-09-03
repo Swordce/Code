@@ -1,13 +1,10 @@
 package com.cxmedia.goods.ui.home.fragment;
 
-import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +14,6 @@ import com.cxmedia.goods.MVP.presenter.CouponPresenter;
 import com.cxmedia.goods.MVP.view.ICouponView;
 import com.cxmedia.goods.R;
 import com.cxmedia.goods.common.Contents;
-import com.cxmedia.goods.ui.base.BaseFragment;
 import com.cxmedia.goods.ui.base.BaseMvpFragment;
 import com.cxmedia.goods.utils.CommonUtils;
 import com.cxmedia.goods.utils.RequestUtils;
@@ -25,14 +21,11 @@ import com.cxmedia.goods.utils.RetrofitFactory;
 import com.google.gson.Gson;
 
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import okhttp3.RequestBody;
 import ru.slybeaver.slycalendarview.SlyCalendarDialog;
 
@@ -84,7 +77,6 @@ public class CreateDiscountFragment extends BaseMvpFragment<CouponPresenter> imp
         String dicountMoney = etDiscountMoney.getText().toString();
         String discountCount = etDiscountCount.getText().toString();
         String totalMoney = etTotalMoney.getText().toString();
-        String
         Map<String,String> map = RequestUtils.addCouponStr(Contents.TEST_MCHTNO,"02",
                 "100","100","1500","111",
                 "2019-08-19","2019-10-1",Contents.TEST_EMPNO);

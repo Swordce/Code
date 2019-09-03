@@ -30,6 +30,7 @@
         android:background="@drawable/white_corner">
 
         <TextView
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
@@ -44,17 +45,11 @@
             android:layout_marginBottom="10dp" />
 
         <TextView
+            android:id="@+id/tv_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:text="尊敬的\n商家用户，您好！"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textSize="15sp"
-            android:text="21:00-22:00停服维护预计xxx恢复"/>
 
     </LinearLayout>
 

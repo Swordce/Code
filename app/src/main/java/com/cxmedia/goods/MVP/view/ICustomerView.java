@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ICustomerView extends IBaseView<CustomerPresenter> {
     void addCustomerResult(String result);
+    void editCustomerResult(String result);
     void deleteCustomerResult(String result);
     void customerListResult(List<CustomerListResult.ListBean> result);
     void customerErrorResult(String error);

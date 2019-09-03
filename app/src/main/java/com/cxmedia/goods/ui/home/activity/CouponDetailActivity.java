@@ -3,6 +3,7 @@ package com.cxmedia.goods.ui.home.activity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -126,6 +127,9 @@ public class CouponDetailActivity extends BaseMvpActivity<CouponPresenter> imple
         tvCouponCount.setText(result.getCouponNum());
         tvUseStartDate.setText(result.getEffectiveDate());
         tvUseDate.setText(result.getEffectiveDate()+"~"+result.getExpireDate());
+        tvUserRequire.setText("消费满"+ result.getFullAmt()+"元可用");
+        tvHaveUse.setText(result.getUseNum() +"张");
+        tvHaveShare.setText(result.getShareNum()+"次");
     }
 
     @Override

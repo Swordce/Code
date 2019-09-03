@@ -3,6 +3,7 @@ package com.cxmedia.goods.ui.user.activity;
 import android.content.Intent;
 import android.support.design.widget.BottomSheetDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cxmedia.goods.Jpush.JPushService;
 import com.cxmedia.goods.MVP.model.LoginResult;
 import com.cxmedia.goods.MVP.presenter.LoginPresenter;
 import com.cxmedia.goods.MVP.view.ILoginView;
@@ -33,6 +35,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.jpush.android.api.JPushInterface;
 
 public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements ILoginView, View.OnClickListener {
 
@@ -121,7 +124,8 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements IL
                 String loginPassword = etLoginPassword.getText().toString();
                 if(!TextUtils.isEmpty(loginName)) {
                     if(!TextUtils.isEmpty(loginPassword)) {
-                        Map<String,String> map = RequestUtils.loginStr(loginName,loginPassword);
+                        Log.e("id", JPushInterface.getRegistrationID(this) +"===========================");
+                        Map<String,String> map = RequestUtils.loginStr(loginName,loginPassword,JPushInterface.getRegistrationID(this));
                         loginPresenter.doLogin(RetrofitFactory.getRequestBody(new Gson().toJson(map)));
                     }else {
                         ToastUtils.showShortToast(this,"登录密码不能为空");
@@ -173,7 +177,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements IL
 
     @Override
     public void loginSuccessResult(LoginResult result) {
-        if(result.getIsFirst() == 0) {
+        if(result.getIsFirst() != 0) {
             Intent intent = new Intent(this,EditPasswordActivity.class);
             startActivity(intent);
         }else {
