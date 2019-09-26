@@ -67,7 +67,7 @@
         android:background="@color/theme_color"
         android:textColor="@color/color_white"
         android:layout_alignParentBottom="true"
-        android:visibility="gone"
+        android:visibility="visible"
         android:gravity="center"
         android:text="立即发放"/>
 

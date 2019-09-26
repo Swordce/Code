@@ -6,20 +6,33 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.cxmedia.goods.MVP.model.LoginResult;
+import com.cxmedia.goods.MVP.presenter.LoginPresenter;
+import com.cxmedia.goods.MVP.view.ILoginView;
 import com.cxmedia.goods.R;
 import com.cxmedia.goods.ui.base.BaseActivity;
+import com.cxmedia.goods.ui.base.BaseMvpActivity;
 import com.cxmedia.goods.utils.AppManager;
+import com.cxmedia.goods.utils.Cache;
+import com.cxmedia.goods.utils.RequestUtils;
+import com.cxmedia.goods.utils.RetrofitFactory;
 import com.cxmedia.goods.utils.SharedPreferencesUtil;
+import com.google.gson.Gson;
+
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class SettingActivity extends BaseActivity implements View.OnClickListener {
+public class SettingActivity extends BaseMvpActivity<LoginPresenter> implements ILoginView,View.OnClickListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.tv_login)
     TextView tvLogin;
+
+    private LoginPresenter loginPresenter;
+    private String empNo;
 
     @Override
     public void initView() {
@@ -28,8 +41,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void getData() {
-        String name = SharedPreferencesUtil.getInstance().getString("name");
-        if(!TextUtils.isEmpty(name)) {
+        empNo = (String) Cache.get("empNo");
+        if(!TextUtils.isEmpty(empNo)) {
             tvLogin.setText("退出登录");
         }else {
             tvLogin.setText("登录");
@@ -59,14 +72,42 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 startActivity(intent1);
                 break;
             case R.id.tv_login:
-                if(tvLogin.getText().toString().equals("登录")) {
-                    Intent loginIntent = new Intent(this,LoginActivity.class);
-                    startActivity(loginIntent);
-                }else {
-                    tvLogin.setText("登录");
+                if("退出登录".equals(tvLogin.getText().toString())) {
+                    TreeMap<String,String> map = RequestUtils.loginOut(empNo);
+                    loginPresenter.doLoginOut(RetrofitFactory.getRequestBody(new Gson().toJson(map)));
                 }
-
                 break;
+        }
+    }
+
+    @Override
+    public void loginSuccessResult(LoginResult result) {
+
+    }
+
+    @Override
+    public void loginFailedResult(String errorMsg) {
+
+    }
+
+    @Override
+    public void editPasswordResult(String result) {
+
+    }
+
+    @Override
+    public void loginOutSuccess(String result) {
+        Intent intent = new Intent(this,LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        AppManager.getAppManager().finishActivity();
+    }
+
+    @Override
+    public void setPresenter(LoginPresenter presenter) {
+        if(presenter == null) {
+            loginPresenter = new LoginPresenter();
+            loginPresenter.attachView(this);
         }
     }
 }

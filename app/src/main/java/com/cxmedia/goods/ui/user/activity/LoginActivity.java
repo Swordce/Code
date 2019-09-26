@@ -18,6 +18,7 @@ import com.cxmedia.goods.MVP.view.ILoginView;
 import com.cxmedia.goods.MainActivity;
 import com.cxmedia.goods.R;
 import com.cxmedia.goods.cache.MchtCache;
+import com.cxmedia.goods.common.Contents;
 import com.cxmedia.goods.ui.base.BaseMvpActivity;
 import com.cxmedia.goods.ui.home.FacePreviewActivity;
 import com.cxmedia.goods.utils.RequestUtils;
@@ -103,7 +104,8 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements IL
                             @Override
                             public void onAction(List<String> data) {
                                 Intent loginIntent = new Intent(LoginActivity.this, FacePreviewActivity.class);
-                                loginIntent.putExtra(FacePreviewActivity.TYPE,1);
+                                loginIntent.putExtra("faceType", Contents.START_FACE_LOGIN);
+                                loginIntent.putExtra("registrationId",JPushInterface.getRegistrationID(LoginActivity.this));
                                 startActivity(loginIntent);
                             }
                         })
@@ -124,7 +126,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements IL
                 String loginPassword = etLoginPassword.getText().toString();
                 if(!TextUtils.isEmpty(loginName)) {
                     if(!TextUtils.isEmpty(loginPassword)) {
-                        Log.e("id", JPushInterface.getRegistrationID(this) +"===========================");
                         Map<String,String> map = RequestUtils.loginStr(loginName,loginPassword,JPushInterface.getRegistrationID(this));
                         loginPresenter.doLogin(RetrofitFactory.getRequestBody(new Gson().toJson(map)));
                     }else {
@@ -196,6 +197,11 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements IL
 
     @Override
     public void editPasswordResult(String result) {
+
+    }
+
+    @Override
+    public void loginOutSuccess(String result) {
 
     }
 

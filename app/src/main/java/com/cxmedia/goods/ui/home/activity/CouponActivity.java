@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.cxmedia.goods.MVP.model.CommonResult;
 import com.cxmedia.goods.MVP.model.CouponListResult;
 import com.cxmedia.goods.MVP.presenter.CouponPresenter;
 import com.cxmedia.goods.MVP.view.ICouponView;
@@ -32,7 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CouponActivity extends BaseMvpActivity<CouponPresenter> implements ICouponView,View.OnClickListener, BaseQuickAdapter.OnItemChildClickListener {
+public class CouponActivity extends BaseMvpActivity<CouponPresenter> implements ICouponView, View.OnClickListener, BaseQuickAdapter.OnItemChildClickListener {
 
 
     @BindView(R.id.rv_coupon)
@@ -58,8 +60,8 @@ public class CouponActivity extends BaseMvpActivity<CouponPresenter> implements 
 
     @Override
     public void getData() {
-        String mchtNo = (String)Cache.get("mchtNo");
-        TreeMap<String,String> map = RequestUtils.couponListStr(mchtNo);
+        String mchtNo = (String) Cache.get("mchtNo");
+        TreeMap<String, String> map = RequestUtils.couponListStr(mchtNo);
         couponPresenter.getCouponList(RetrofitFactory.getRequestBody(new Gson().toJson(map)));
     }
 
@@ -84,7 +86,8 @@ public class CouponActivity extends BaseMvpActivity<CouponPresenter> implements 
         switch (view.getId()) {
             case R.id.tv_look:
                 Intent intent = new Intent(this, CouponDetailActivity.class);
-                intent.putExtra("couponId",mList.get(position).getId()+"");
+                intent.putExtra("couponId", mList.get(position).getId() + "");
+                intent.putExtra("couponType",mList.get(position).getCouponType());
                 startActivity(intent);
                 break;
             case R.id.tv_delete:
@@ -97,7 +100,7 @@ public class CouponActivity extends BaseMvpActivity<CouponPresenter> implements 
                             public void onClick(DialogInterface dialog, int which) {
                                 deletePos = position;
                                 String mchtNo = (String) Cache.get("mchtNo");
-                                TreeMap<String,String> map = RequestUtils.deleteCouponStr(mchtNo,mList.get(position).getId()+"");
+                                TreeMap<String, String> map = RequestUtils.deleteCouponStr(mchtNo, mList.get(position).getId() + "");
                                 couponPresenter.deleteCouponDetail(RetrofitFactory.getRequestBody(new Gson().toJson(map)));
                             }
                         })
@@ -130,7 +133,7 @@ public class CouponActivity extends BaseMvpActivity<CouponPresenter> implements 
 
     @Override
     public void deleteCouponSuccessResult(String result) {
-        ToastUtils.showShortToast(this,result);
+        ToastUtils.showShortToast(this, result);
         mList.remove(deletePos);
         couponAdapter.notifyDataSetChanged();
         deletePos = -1;
@@ -143,12 +146,17 @@ public class CouponActivity extends BaseMvpActivity<CouponPresenter> implements 
 
     @Override
     public void couponFailedResult(String errorMsg) {
-        ToastUtils.showShortToast(this,errorMsg);
+        ToastUtils.showShortToast(this, errorMsg);
+    }
+
+    @Override
+    public void uploadFileResult(CommonResult result,int type) {
+
     }
 
     @Override
     public void setPresenter(CouponPresenter presenter) {
-        if(presenter == null) {
+        if (presenter == null) {
             couponPresenter = new CouponPresenter();
             couponPresenter.attachView(this);
         }

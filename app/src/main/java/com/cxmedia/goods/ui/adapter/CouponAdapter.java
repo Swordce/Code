@@ -1,6 +1,7 @@
 package com.cxmedia.goods.ui.adapter;
 
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -20,7 +21,11 @@ public class CouponAdapter extends BaseQuickAdapter<CouponListResult.ListBean,Ba
     @Override
     protected void convert(BaseViewHolder helper, CouponListResult.ListBean item) {
         GlideApp.with(mContext).load(item.getThumbnail()).placeholder(R.drawable.icon).into((ImageView)helper.getView(R.id.iv_thumb));
-        helper.setText(R.id.tv_coupon_name,"优惠券立减"+item.getSubtractionAmt()+"元");
+        if(!TextUtils.isEmpty(item.getFullAmt())) {
+            helper.setText(R.id.tv_coupon_name,"优惠券立减"+item.getFullAmt()+"元");
+        }else {
+            helper.setText(R.id.tv_coupon_name,"优惠券立减0元");
+        }
         helper.addOnClickListener(R.id.tv_look)
                 .addOnClickListener(R.id.tv_delete);
     }

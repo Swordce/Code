@@ -116,7 +116,7 @@ public class CreateCustomerActivity extends BaseMvpActivity<CustomerPresenter> i
 
     @Override
     public void customerErrorResult(String error) {
-
+        ToastUtils.showShortToast(this,error);
     }
 
     @Override

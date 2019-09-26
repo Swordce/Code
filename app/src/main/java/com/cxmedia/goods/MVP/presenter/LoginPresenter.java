@@ -2,6 +2,7 @@ package com.cxmedia.goods.MVP.presenter;
 
 import com.cxmedia.goods.MVP.BasePresenter;
 import com.cxmedia.goods.MVP.api.ApiService;
+import com.cxmedia.goods.MVP.model.CommonResult;
 import com.cxmedia.goods.MVP.model.LoginResult;
 import com.cxmedia.goods.MVP.view.ILoginView;
 import com.cxmedia.goods.cache.MchtCache;
@@ -64,6 +65,29 @@ public class LoginPresenter extends BasePresenter<ILoginView> {
                         LoginResult model = new Gson().fromJson(responseBody.string(), LoginResult.class);
                         if("0000".equals(model.getRespCode())) {
                             baseview.editPasswordResult("修改成功");
+                        }else {
+                            throw new Exception(model.getRespMsg());
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        baseview.loginFailedResult(throwable.getMessage());
+                    }
+                });
+        addSubscription(disposable);
+    }
+
+    public void doLoginOut(RequestBody body) {
+        Disposable disposable = ApiService.getApi().loginOut(body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        CommonResult model = new Gson().fromJson(responseBody.string(), CommonResult.class);
+                        if("0000".equals(model.getRespCode())) {
+                            baseview.loginOutSuccess("");
                         }else {
                             throw new Exception(model.getRespMsg());
                         }

@@ -31,7 +31,7 @@ public class CustomerPresenter extends BasePresenter<ICustomerView> {
                         if(Contents.SUCCESS_CODE.equals(listResult.getRespCode())) {
                             baseview.customerListResult(listResult.getList());
                         }else {
-                            throw new Exception("请稍后重试");
+                            throw new Exception(listResult.getRespMsg());
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -55,7 +55,7 @@ public class CustomerPresenter extends BasePresenter<ICustomerView> {
                         if(Contents.SUCCESS_CODE.equals(result.getRespCode())) {
                             baseview.addCustomerResult("添加成功");
                         }else {
-                            throw new Exception("添加失败,请稍后重试!");
+                            throw new Exception(result.getRespMsg());
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -79,7 +79,7 @@ public class CustomerPresenter extends BasePresenter<ICustomerView> {
                         if(Contents.SUCCESS_CODE.equals(response.getRespCode())) {
                             baseview.deleteCustomerResult("删除成功");
                         }else {
-                            throw new Exception("删除失败");
+                            throw new Exception(response.getRespMsg());
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -128,7 +128,7 @@ public class CustomerPresenter extends BasePresenter<ICustomerView> {
                         if(Contents.SUCCESS_CODE.equals(listResult.getRespCode())) {
                             baseview.customerListResult(listResult.getList());
                         }else {
-                            throw new Exception("请稍后重试");
+                            throw new Exception(listResult.getRespMsg());
                         }
                     }
                 }, new Consumer<Throwable>() {

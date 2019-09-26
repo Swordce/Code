@@ -62,8 +62,8 @@ public class CouponListResult {
         private String couponType;
         private int couponNum;
         private String discount;
-        private int fullAmt;
-        private int subtractionAmt;
+        private String fullAmt;
+        private String subtractionAmt;
         private String effectiveDate;
         private String expireDate;
         private String createTime;
@@ -148,19 +148,19 @@ public class CouponListResult {
             this.discount = discount;
         }
 
-        public int getFullAmt() {
+        public String getFullAmt() {
             return fullAmt;
         }
 
-        public void setFullAmt(int fullAmt) {
+        public void setFullAmt(String fullAmt) {
             this.fullAmt = fullAmt;
         }
 
-        public int getSubtractionAmt() {
+        public String getSubtractionAmt() {
             return subtractionAmt;
         }
 
-        public void setSubtractionAmt(int subtractionAmt) {
+        public void setSubtractionAmt(String subtractionAmt) {
             this.subtractionAmt = subtractionAmt;
         }
 

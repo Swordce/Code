@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path
+        name="files_root"
+        path="com/cxmedia/goods" />
+    <external-path
+        name="external_storage_root"
+        path="." />
+    <external-path name="external_files" path="."/>
+    <root-path path="" name="images"/>
+</paths>

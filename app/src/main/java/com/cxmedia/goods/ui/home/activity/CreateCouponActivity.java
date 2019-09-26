@@ -96,7 +96,12 @@ public class CreateCouponActivity extends BaseActivity {
                 AppManager.getAppManager().finishActivity();
                 break;
             case R.id.tv_create_coupon:
-
+                Fragment fragment = mFragment.get(vp.getCurrentItem());
+                if(fragment instanceof CreateCouponFragment) {
+                    ((CreateCouponFragment) fragment).uploadCoupon();
+                }else if(fragment instanceof CreateDiscountFragment) {
+                    ((CreateDiscountFragment) fragment).uploadCoupon();
+                }
                 break;
         }
     }

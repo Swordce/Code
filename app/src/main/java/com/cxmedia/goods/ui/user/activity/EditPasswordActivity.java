@@ -106,6 +106,11 @@ public class EditPasswordActivity extends BaseMvpActivity<LoginPresenter> implem
     }
 
     @Override
+    public void loginOutSuccess(String result) {
+
+    }
+
+    @Override
     public void setPresenter(LoginPresenter presenter) {
         if(presenter == null) {
             loginPresenter = new LoginPresenter();

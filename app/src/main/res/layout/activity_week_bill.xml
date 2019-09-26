@@ -97,6 +97,7 @@
                             android:text="今日交易"/>
 
                         <TextView
+                            android:id="@+id/tv_today_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/theme_color"
@@ -118,6 +119,7 @@
                             android:text="共计"/>
 
                         <TextView
+                            android:id="@+id/tv_today_money"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/theme_color"
@@ -136,6 +138,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tv_total_money"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -195,6 +198,7 @@
                     android:text="退款交易"/>
 
                 <TextView
+                    android:id="@+id/tv_refund_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/theme_color"
@@ -216,6 +220,7 @@
                     android:text="共计"/>
 
                 <TextView
+                    android:id="@+id/tv_refund_money"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/theme_color"
@@ -246,6 +251,7 @@
                     android:text="优惠券交易"/>
 
                 <TextView
+                    android:id="@+id/tv_coupon_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/theme_color"
@@ -267,6 +273,7 @@
                     android:text="共计"/>
 
                 <TextView
+                    android:id="@+id/tv_coupon_money"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/theme_color"

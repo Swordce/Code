@@ -3,7 +3,13 @@ package com.cxmedia.goods.ui.home;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Camera;
 import android.support.annotation.NonNull;
@@ -25,17 +31,30 @@ import com.arcsoft.face.FaceEngine;
 import com.arcsoft.face.FaceInfo;
 import com.arcsoft.face.VersionInfo;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.cxmedia.goods.MVP.model.CommonResult;
+import com.cxmedia.goods.MVP.model.HomeOrderInfo;
+import com.cxmedia.goods.MVP.model.LoginResult;
+import com.cxmedia.goods.MVP.model.OrderCategroyResult;
+import com.cxmedia.goods.MVP.model.OrderDetailResult;
+import com.cxmedia.goods.MVP.model.OrderInfoListResult;
+import com.cxmedia.goods.MVP.presenter.OrderPresenter;
+import com.cxmedia.goods.MVP.view.IOrderView;
 import com.cxmedia.goods.MainActivity;
 import com.cxmedia.goods.R;
 import com.cxmedia.goods.camera.CameraHelper;
 import com.cxmedia.goods.camera.CameraListener;
 import com.cxmedia.goods.common.Contents;
 import com.cxmedia.goods.common.EventMsg;
-import com.cxmedia.goods.ui.base.BaseActivity;
+import com.cxmedia.goods.ui.base.BaseMvpActivity;
+import com.cxmedia.goods.ui.user.activity.BindPhoneActivity;
 import com.cxmedia.goods.ui.user.activity.CodeVerificationActivity;
+import com.cxmedia.goods.ui.user.activity.EditPasswordActivity;
 import com.cxmedia.goods.ui.user.activity.PhoneCodeVerificationActivity;
 import com.cxmedia.goods.utils.AppManager;
+import com.cxmedia.goods.utils.Cache;
+import com.cxmedia.goods.utils.CalendarUtil;
 import com.cxmedia.goods.utils.GlideApp;
+import com.cxmedia.goods.utils.ToastUtils;
 import com.cxmedia.goods.widgets.AnimationView;
 import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
@@ -43,13 +62,17 @@ import com.yanzhenjie.permission.runtime.Permission;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
-public class FacePreviewActivity extends BaseActivity implements View.OnClickListener, ViewTreeObserver.OnGlobalLayoutListener {
+public class FacePreviewActivity extends BaseMvpActivity<OrderPresenter> implements IOrderView, View.OnClickListener, ViewTreeObserver.OnGlobalLayoutListener {
 
     @BindView(R.id.iv_face)
     ImageView ivFace;
@@ -66,7 +89,12 @@ public class FacePreviewActivity extends BaseActivity implements View.OnClickLis
     private BottomSheetDialog typeDialog;
     private BottomSheetDialog pwdDialog;
     private BottomSheetDialog refundDialog;
-    private boolean isRefund = false;
+    private String refundMoney;
+    private String orderNo;
+    private String mchtNo;
+    private String empNo;
+    private String smsCode;
+    private String registrationId;
     private static final int ACTION_REQUEST_PERMISSIONS = 0x001;
 
     private static final String[] NEEDED_PERMISSIONS = new String[]{
@@ -83,6 +111,7 @@ public class FacePreviewActivity extends BaseActivity implements View.OnClickLis
     private AnimationDrawable anim;
     private int type;
     private CameraHelper cameraHelper;
+    private OrderPresenter orderPresenter;
 
     private void setWindowBrightness(int brightness) {
         Window window = getWindow();
@@ -95,19 +124,29 @@ public class FacePreviewActivity extends BaseActivity implements View.OnClickLis
     public void initView() {
         setWindowBrightness(255);
         Intent intent = getIntent();
-        type = intent.getIntExtra(TYPE, 0);
-        isRefund = intent.getBooleanExtra("refund", false);
-        if (type == 0) {
+        type = intent.getIntExtra("faceType", Contents.OPEN_FACE_LOGIN);
+        smsCode = intent.getStringExtra("smsCode");
+        refundMoney = intent.getStringExtra("ordAmt");
+        orderNo = intent.getStringExtra("orderNo");
+        registrationId = intent.getStringExtra("registrationId");
+        mchtNo = (String) Cache.get("mchtNo");
+        empNo = (String) Cache.get("empNo");
+        if (type == Contents.OPEN_FACE_LOGIN) {
             ivFace.setVisibility(View.VISIBLE);
             animFace.setVisibility(View.GONE);
             GlideApp.with(this).asDrawable().load(R.drawable.ic_face_white).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.ALL).into(ivFace);
-            tvChangeType.setText("切换验证方式");
-        } else if (type == 1) {
+            tvChangeType.setVisibility(View.GONE);
+        } else if (type == Contents.START_FACE_REFUND) {
             ivFace.setVisibility(View.GONE);
             animFace.setVisibility(View.VISIBLE);
             animFace.setIsRepeat(true);
             animFace.setData(getAnimationData());
             animFace.start();
+            tvChangeType.setText("切换验证方式");
+        }else if(type == Contents.START_FACE_LOGIN){
+            ivFace.setVisibility(View.VISIBLE);
+            animFace.setVisibility(View.GONE);
+            GlideApp.with(this).asDrawable().load(R.drawable.ic_face_white).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.ALL).into(ivFace);
             tvChangeType.setText("平视手机，正对光源");
         } else {
             ivFace.setVisibility(View.VISIBLE);
@@ -121,13 +160,13 @@ public class FacePreviewActivity extends BaseActivity implements View.OnClickLis
         if (cameraHelper != null) {
             AndPermission.with(this)
                     .runtime()
-                    .permission(Permission.CAMERA,Permission.ACCESS_FINE_LOCATION,Permission.ACCESS_COARSE_LOCATION, Permission.READ_PHONE_STATE)
+                    .permission(Permission.CAMERA, Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION, Permission.READ_PHONE_STATE)
                     .onGranted(new Action<List<String>>() {
                         @Override
                         public void onAction(List<String> data) {
                             try {
                                 cameraHelper.start();
-                            }catch (Exception e) {
+                            } catch (Exception e) {
                                 Toast.makeText(FacePreviewActivity.this, "启动相机失败 " + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -141,76 +180,17 @@ public class FacePreviewActivity extends BaseActivity implements View.OnClickLis
                     }).start();
         }
 
-//        try {
-//            faceCamera.setCameraDataCallback(new CameraView.CameraDataCallback() {
-//                @Override·
-//                public void onYuvDataFrame(byte[] nv21, Camera camera) {
-//
-//                }
-//
-//                @Override
-//                public void onH264DataFrame(byte[] h264, int width, int height) {
-//
-//                }
-//
-//                @Override
-//                public void onAacDataFrame(byte[] aac, int length) {
-//
-//                }
-//
-//                @Override
-//                public void onNv21DataFrame(final byte[] nv21, Camera camera) {
-//                    try {
-//                        if (!isDefectFace) {
-//                            final List<FaceInfo> faceInfoList = new ArrayList<>();
-//                            previewSize = camera.getParameters().getPreviewSize();
-//                            initEngine();
-//                            int code = faceEngine.detectFaces(nv21, previewSize.width, previewSize.height, FaceEngine.CP_PAF_NV21, faceInfoList);
-//                            if (code == ErrorInfo.MOK && faceInfoList.size() > 0) {
-//                                isDefectFace = true;
-//                                runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        if (type == 1) {
-//                                            if (anim != null) {
-//                                                anim.stop();
-//                                            }
-//                                            Intent intent = new Intent(FacePreviewActivity.this, MainActivity.class);
-//                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                            startActivity(intent);
-//                                            AppManager.getAppManager().finishActivity();
-//                                        } else {
-//                                            Toast.makeText(FacePreviewActivity.this, "检测到人脸", Toast.LENGTH_SHORT).show();
-//                                        }
-//
-//                                    }
-//                                });
-//                            }
-//
-//                        }
-//
-//                    } catch (Exception e) {
-//                        Toast.makeText(FacePreviewActivity.this, "SDK加载失败" + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                }
-//            });
-//        } catch (Exception e) {
-//            Toast.makeText(FacePreviewActivity.this, "出现异常 " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//        }
-
     }
 
 
-
     private void checkPermissions() {
-        if(AndPermission.hasPermissions(this, NEEDED_PERMISSIONS)) {
+        if (AndPermission.hasPermissions(this, NEEDED_PERMISSIONS)) {
             initCamera();
             cameraHelper.start();
         } else {
             AndPermission.with(this)
                     .runtime()
-                    .permission(Permission.CAMERA,Permission.ACCESS_FINE_LOCATION,Permission.ACCESS_COARSE_LOCATION, Permission.READ_PHONE_STATE)
+                    .permission(Permission.CAMERA, Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION, Permission.READ_PHONE_STATE)
                     .onGranted(new Action<List<String>>() {
                         @Override
                         public void onAction(List<String> data) {
@@ -241,7 +221,7 @@ public class FacePreviewActivity extends BaseActivity implements View.OnClickLis
 
 
             @Override
-            public void onPreview(byte[] nv21, Camera camera) {
+            public void onPreview(final byte[] nv21, final Camera camera) {
                 try {
                     if (!isDefectFace) {
                         final List<FaceInfo> faceInfoList = new ArrayList<>();
@@ -252,29 +232,65 @@ public class FacePreviewActivity extends BaseActivity implements View.OnClickLis
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(FacePreviewActivity.this, "检测到人脸", Toast.LENGTH_SHORT).show();
+                                    Camera.Size size = camera.getParameters().getPreviewSize();
+                                    YuvImage image = new YuvImage(nv21, ImageFormat.NV21, size.width, size.height, null);
+                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                    image.compressToJpeg(new Rect(0, 0, size.width, size.height), 100, stream);
+                                    Bitmap bmp = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
+                                    Log.e("fdsaf","44444");
+                                    ivFace.setImageBitmap(bmp);
 
-                                    if (type == 1) {
-                                        if (anim != null) {
-                                            anim.stop();
-                                        }
-                                        Intent intent = new Intent(FacePreviewActivity.this, MainActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(intent);
-                                        AppManager.getAppManager().finishActivity();
-                                    } else {
-                                        Toast.makeText(FacePreviewActivity.this, "检测到人脸", Toast.LENGTH_SHORT).show();
+                                    //**********************
+                                    //因为图片会放生旋转，因此要对图片进行旋转到和手机在一个方向上
+                                    Bitmap bitmap = rotateMyBitmap(bmp);
+                                    Log.e("fdsaf","1111");
+                                    ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream1);
+                                    if(type == Contents.OPEN_FACE_LOGIN) {
+                                        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                                                .addFormDataPart("faceScope", "1")
+                                                .addFormDataPart("empNo", empNo)
+                                                .addFormDataPart("verificationCode", smsCode)
+                                                .addFormDataPart("file", "file", RequestBody.create(MediaType.parse("image*//*"), stream1.toByteArray()))
+                                                .build();
+                                        orderPresenter.doSaveFace(requestBody);
+                                    }else if(type == Contents.START_FACE_REFUND) {
+                                        CalendarUtil util = new CalendarUtil();
+                                        Log.e("fdsaf","222");
+                                        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                                                .addFormDataPart("memberId", mchtNo)
+                                                .addFormDataPart("orgTermOrdId", orderNo)
+                                                .addFormDataPart("ordAmt", refundMoney)
+                                                .addFormDataPart("transDate", util.getTime())
+                                                .addFormDataPart("file", "file", RequestBody.create(MediaType.parse("image*//*"), stream1.toByteArray()))
+                                                .build();
+                                        orderPresenter.doOrderFaceRefund(requestBody);
+                                    }else if(type == Contents.OPEN_FACE_REFUND) {
+                                        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                                                .addFormDataPart("faceScope", "2")
+                                                .addFormDataPart("empNo", empNo)
+                                                .addFormDataPart("verificationCode", smsCode)
+                                                .addFormDataPart("file", "file", RequestBody.create(MediaType.parse("image*//*"), stream1.toByteArray()))
+                                                .build();
+                                        orderPresenter.doSaveFace(requestBody);
+                                    }else if(type == Contents.START_FACE_LOGIN) {
+                                        RequestBody requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                                                .addFormDataPart("registrationId", registrationId)
+                                                .addFormDataPart("file", "file", RequestBody.create(MediaType.parse("image*//*"), stream1.toByteArray()))
+                                                .build();
+                                        orderPresenter.doFaceLogin(requestBody);
                                     }
-
                                 }
                             });
-                        }else {
-                            Log.e(getClass().getSimpleName(),"检测人脸失败,错误码" + code);
+                        } else {
+                            isDefectFace =false;
+                            Log.e(getClass().getSimpleName(), "检测人脸失败,错误码" + code);
                         }
 
                     }
 
                 } catch (Exception e) {
+                    isDefectFace =false;
                     Toast.makeText(FacePreviewActivity.this, "SDK加载失败" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -287,7 +303,7 @@ public class FacePreviewActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onCameraError(Exception e) {
                 Log.i(TAG, "onCameraError: " + e.getMessage());
-                Toast.makeText(FacePreviewActivity.this, "相机异常",Toast.LENGTH_SHORT).show();
+                Toast.makeText(FacePreviewActivity.this, "相机异常", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -305,6 +321,18 @@ public class FacePreviewActivity extends BaseActivity implements View.OnClickLis
                 .cameraListener(cameraListener)
                 .build();
         cameraHelper.init();
+    }
+
+
+    public Bitmap rotateMyBitmap(Bitmap bmp) {
+        //*****旋转一下
+        Matrix matrix = new Matrix();
+        matrix.postRotate(-90);
+
+        Bitmap bitmap = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), Bitmap.Config.ARGB_8888);
+
+        Bitmap nbmp2 = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+        return nbmp2;
     }
 
 
@@ -356,7 +384,7 @@ public class FacePreviewActivity extends BaseActivity implements View.OnClickLis
                 AppManager.getAppManager().finishActivity();
                 break;
             case R.id.tv_change_type:
-                if (!isRefund) {
+                if (type != Contents.START_FACE_REFUND) {
                     typeDialog = new BottomSheetDialog(this);
                     View typeView = getLayoutInflater().inflate(R.layout.layout_type, null);
                     TextView tvCommonPwd = typeView.findViewById(R.id.tv_common_pwd);
@@ -459,7 +487,7 @@ public class FacePreviewActivity extends BaseActivity implements View.OnClickLis
         if (faceEngine != null) {
             faceEngine.unInit();
         }
-        if(cameraHelper != null) {
+        if (cameraHelper != null) {
             cameraHelper.stop();
         }
         super.onDestroy();
@@ -470,5 +498,85 @@ public class FacePreviewActivity extends BaseActivity implements View.OnClickLis
         previewView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 //        initCamera();
         checkPermissions();
+    }
+
+    @Override
+    public void orderInfoError(String errorMsg) {
+        isDefectFace = false;
+        ToastUtils.showShortToast(this,errorMsg);
+    }
+
+    @Override
+    public void homeOrderInfoResult(HomeOrderInfo.IndexOrderDataBean result) {
+
+    }
+
+    @Override
+    public void orderInfoListResult(List<OrderInfoListResult.RowsBean> result) {
+
+    }
+
+    @Override
+    public void OrderSettleResult(OrderCategroyResult result) {
+
+    }
+
+    @Override
+    public void orderDetailResult(OrderDetailResult.DataBean result) {
+
+    }
+
+    @Override
+    public void getSmsCodeResult(String result) {
+
+    }
+
+    @Override
+    public void saveFaceSuccessResult(String result) {
+        if (anim != null) {
+            anim.stop();
+        }
+        ToastUtils.showShortToast(this,result);
+        if(type != Contents.START_FACE_REFUND) {
+            EventBus.getDefault().postSticky(new EventMsg(type));
+            AppManager.getAppManager().finishActivity(BindPhoneActivity.class);
+        }
+        AppManager.getAppManager().finishActivity();
+    }
+
+    @Override
+    public void faceLoginResult(LoginResult result) {
+        if(result.getIsFirst() != 0) {
+            Intent intent = new Intent(this, EditPasswordActivity.class);
+            startActivity(intent);
+        }else {
+            ToastUtils.showShortToast(this,"登录成功");
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void resetRefundPasswordResult(CommonResult result) {
+
+    }
+
+    @Override
+    public void faceRefundResult(String result) {
+        ToastUtils.showShortToast(this,result);
+    }
+
+    @Override
+    public void passwordRefundResult(String result) {
+
+    }
+
+    @Override
+    public void setPresenter(OrderPresenter presenter) {
+        if (presenter == null) {
+            orderPresenter = new OrderPresenter();
+            orderPresenter.attachView(this);
+        }
     }
 }

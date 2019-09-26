@@ -2,7 +2,7 @@ package com.cxmedia.goods.MVP.model;
 
 import java.util.List;
 
-public class TestModel {
+public class OrderCategroyResult {
 
     /**
      * realPayCount : 1
@@ -153,7 +153,7 @@ public class TestModel {
 
             private String orderNo;
             private String orderTime;
-            private Object transactionTime;
+            private String transactionTime;
             private String payChannelType;
             private String orderType;
             private String memberId;
@@ -161,16 +161,16 @@ public class TestModel {
             private double refundAmt;
             private double orderAmt;
             private String openId;
-            private Object buyerId;
+            private String buyerId;
             private String goodsDesc;
             private String payTypeDetail;
             private double merchandiseFee;
-            private Object couponId;
-            private Object couponType;
-            private Object discount;
-            private Object fullAmt;
+            private String couponId;
+            private String couponType;
+            private String discount;
+            private String fullAmt;
             private double realAmt;
-            private Object preferentialAmt;
+            private String preferentialAmt;
             private String updateTime;
             private String createTime;
             private String outTransId;
@@ -192,11 +192,11 @@ public class TestModel {
                 this.orderTime = orderTime;
             }
 
-            public Object getTransactionTime() {
+            public String getTransactionTime() {
                 return transactionTime;
             }
 
-            public void setTransactionTime(Object transactionTime) {
+            public void setTransactionTime(String transactionTime) {
                 this.transactionTime = transactionTime;
             }
 
@@ -256,11 +256,11 @@ public class TestModel {
                 this.openId = openId;
             }
 
-            public Object getBuyerId() {
+            public String getBuyerId() {
                 return buyerId;
             }
 
-            public void setBuyerId(Object buyerId) {
+            public void setBuyerId(String buyerId) {
                 this.buyerId = buyerId;
             }
 
@@ -288,35 +288,35 @@ public class TestModel {
                 this.merchandiseFee = merchandiseFee;
             }
 
-            public Object getCouponId() {
+            public String getCouponId() {
                 return couponId;
             }
 
-            public void setCouponId(Object couponId) {
+            public void setCouponId(String couponId) {
                 this.couponId = couponId;
             }
 
-            public Object getCouponType() {
+            public String getCouponType() {
                 return couponType;
             }
 
-            public void setCouponType(Object couponType) {
+            public void setCouponType(String couponType) {
                 this.couponType = couponType;
             }
 
-            public Object getDiscount() {
+            public String getDiscount() {
                 return discount;
             }
 
-            public void setDiscount(Object discount) {
+            public void setDiscount(String discount) {
                 this.discount = discount;
             }
 
-            public Object getFullAmt() {
+            public String getFullAmt() {
                 return fullAmt;
             }
 
-            public void setFullAmt(Object fullAmt) {
+            public void setFullAmt(String fullAmt) {
                 this.fullAmt = fullAmt;
             }
 
@@ -328,11 +328,11 @@ public class TestModel {
                 this.realAmt = realAmt;
             }
 
-            public Object getPreferentialAmt() {
+            public String getPreferentialAmt() {
                 return preferentialAmt;
             }
 
-            public void setPreferentialAmt(Object preferentialAmt) {
+            public void setPreferentialAmt(String preferentialAmt) {
                 this.preferentialAmt = preferentialAmt;
             }
 

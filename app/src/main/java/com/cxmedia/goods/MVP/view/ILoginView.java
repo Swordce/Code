@@ -9,4 +9,5 @@ public interface ILoginView extends IBaseView<LoginPresenter> {
     void loginSuccessResult(LoginResult result);
     void loginFailedResult(String errorMsg);
     void editPasswordResult(String result);
+    void loginOutSuccess(String result);
 }

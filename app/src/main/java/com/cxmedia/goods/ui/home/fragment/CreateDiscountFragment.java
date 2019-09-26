@@ -1,20 +1,25 @@
 package com.cxmedia.goods.ui.home.fragment;
 
+import android.content.Intent;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cxmedia.goods.MVP.model.CommonResult;
 import com.cxmedia.goods.MVP.model.CouponListResult;
 import com.cxmedia.goods.MVP.presenter.CouponPresenter;
 import com.cxmedia.goods.MVP.view.ICouponView;
 import com.cxmedia.goods.R;
 import com.cxmedia.goods.common.Contents;
 import com.cxmedia.goods.ui.base.BaseMvpFragment;
+import com.cxmedia.goods.utils.Cache;
 import com.cxmedia.goods.utils.CommonUtils;
 import com.cxmedia.goods.utils.RequestUtils;
 import com.cxmedia.goods.utils.RetrofitFactory;
@@ -35,19 +40,19 @@ public class CreateDiscountFragment extends BaseMvpFragment<CouponPresenter> imp
     TextView tvUseDay;
     @BindView(R.id.tv_time)
     TextView tvTime;
-    @BindView(R.id.tv_create_coupon)
-    TextView tvCreateCoupon;
     @BindView(R.id.et_discount_money)
     EditText etDiscountMoney;
     @BindView(R.id.et_discount_count)
     EditText etDiscountCount;
     @BindView(R.id.et_use_method)
     EditText etUseMethod;
-    @BindView(R.id.et_total_money)
-    EditText etTotalMoney;
 
     private BottomSheetDialog useDialog;
     private CouponPresenter couponPresenter;
+    private String thumbnail;
+    private String poster;
+    private String mchtNo;
+    private String empNo;
 
     public static CreateDiscountFragment newInstance() {
         return new CreateDiscountFragment();
@@ -59,7 +64,25 @@ public class CreateDiscountFragment extends BaseMvpFragment<CouponPresenter> imp
 
     @Override
     public void initView() {
+        mchtNo = (String) Cache.get("mchtNo");
+        empNo = (String)Cache.get("empNo");
+        etUseMethod.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                etUseMethod.setText(text +"元");
+            }
+        });
     }
 
     @Override
@@ -73,46 +96,29 @@ public class CreateDiscountFragment extends BaseMvpFragment<CouponPresenter> imp
     }
 
 
-    public void create() {
-        String dicountMoney = etDiscountMoney.getText().toString();
-        String discountCount = etDiscountCount.getText().toString();
-        String totalMoney = etTotalMoney.getText().toString();
-        Map<String,String> map = RequestUtils.addCouponStr(Contents.TEST_MCHTNO,"02",
-                "100","100","1500","111",
-                "2019-08-19","2019-10-1",Contents.TEST_EMPNO);
-
-        RequestBody body = RetrofitFactory.getRequestBody(new Gson().toJson(map));
-        couponPresenter.addCoupon(body);
-    }
-
-    @OnClick({R.id.ll_use_day, R.id.ll_use_time,R.id.tv_create_coupon})
+    @OnClick({R.id.ll_use_day, R.id.ll_use_time})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.tv_create_coupon:
-                create();
-                break;
             case R.id.ll_use_day:
-                useDialog = new BottomSheetDialog(getActivity());
-                View refundView = getLayoutInflater().inflate(R.layout.layout_use_dialog, null);
-                final TextView tvCurrentDay = refundView.findViewById(R.id.tv_current_day);
-                final TextView tvNextDay = refundView.findViewById(R.id.tv_next_day);
-                tvCurrentDay.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        useDialog.dismiss();
-                        tvUseDay.setText(tvCurrentDay.getText().toString());
-                    }
-                });
+                new SlyCalendarDialog()
+                        .setSingle(true)
+                        .setHeaderColor(ContextCompat.getColor(getActivity(), R.color.theme_color))
+                        .setSelectedColor(ContextCompat.getColor(getActivity(), R.color.theme_color))
+                        .setStartDate(Calendar.getInstance().getTime())
+                        .setFirstMonday(true)
+                        .setCallback(new SlyCalendarDialog.Callback() {
+                            @Override
+                            public void onCancelled() {
 
-                tvNextDay.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        useDialog.dismiss();
-                        tvUseDay.setText(tvNextDay.getText().toString());
-                    }
-                });
-                useDialog.setContentView(refundView);
-                useDialog.show();
+                            }
+
+                            @Override
+                            public void onDataSelected(Calendar firstDate, Calendar secondDate, int hours, int minutes) {
+                                String startTime = firstDate.get(Calendar.YEAR) + "-" + (firstDate.get(Calendar.MONTH) + 1) + "-" + firstDate.get(Calendar.DAY_OF_MONTH);
+                                tvUseDay.setText(startTime);
+                            }
+                        })
+                        .show(getFragmentManager(), "TAG_SLYCALENDAR");
                 break;
             case R.id.ll_use_time:
                 new SlyCalendarDialog()
@@ -176,10 +182,35 @@ public class CreateDiscountFragment extends BaseMvpFragment<CouponPresenter> imp
     }
 
     @Override
+    public void uploadFileResult(CommonResult result,int type) {
+
+    }
+
+
+    @Override
     public void setPresenter(CouponPresenter presenter) {
         if (presenter == null) {
             couponPresenter = new CouponPresenter();
             couponPresenter.attachView(this);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void uploadCoupon() {
+        String dicountMoney = etDiscountMoney.getText().toString();
+        String discountCount = etDiscountCount.getText().toString();
+        String userMethod = etUseMethod.getText().toString();
+        String useDay = tvUseDay.getText().toString();
+        String useEndDay = tvTime.getText().toString();
+        Map<String,String> map = RequestUtils.addCouponStr(mchtNo,"1",
+                dicountMoney,discountCount,"0",userMethod,
+                useDay,useEndDay,thumbnail,poster,empNo);
+
+        RequestBody body = RetrofitFactory.getRequestBody(new Gson().toJson(map));
+        couponPresenter.addCoupon(body);
     }
 }

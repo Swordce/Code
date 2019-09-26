@@ -1,7 +1,5 @@
 package com.cxmedia.goods.MVP.presenter;
 
-import android.widget.Toast;
-
 import com.cxmedia.goods.MVP.BasePresenter;
 import com.cxmedia.goods.MVP.api.ApiService;
 import com.cxmedia.goods.MVP.model.CommonResult;
@@ -14,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 
@@ -31,13 +30,13 @@ public class CouponPresenter extends BasePresenter<ICouponView> {
                         if(Contents.SUCCESS_CODE.equals(result.getRespCode())) {
                             baseview.couponListResult(result.getList());
                         }else {
-                            throw new Exception("获取数据失败");
+                            throw new Exception(result.getRespMsg());
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        baseview.addCouponSuccessResult(throwable.getMessage());
+                        baseview.couponFailedResult(throwable.getMessage());
                     }
                 });
         addSubscription(disposable);
@@ -55,13 +54,13 @@ public class CouponPresenter extends BasePresenter<ICouponView> {
                         if(Contents.SUCCESS_CODE.equals(result.getRespCode())) {
                             baseview.addCouponSuccessResult("添加成功");
                         }else {
-                            throw new Exception("添加失失败,请稍后重试!");
+                            throw new Exception(result.getRespMsg());
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        baseview.addCouponSuccessResult(throwable.getMessage());
+                        baseview.couponFailedResult(throwable.getMessage());
                     }
                 });
         addSubscription(disposable);
@@ -85,7 +84,7 @@ public class CouponPresenter extends BasePresenter<ICouponView> {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        baseview.addCouponSuccessResult(throwable.getMessage());
+                        baseview.couponFailedResult(throwable.getMessage());
                     }
                 });
         addSubscription(disposable);
@@ -103,13 +102,13 @@ public class CouponPresenter extends BasePresenter<ICouponView> {
                         if(Contents.SUCCESS_CODE.equals(result.getRespCode())) {
                             baseview.deleteCouponSuccessResult("删除成功");
                         }else {
-                            throw new Exception("删除失败,请稍后重试！");
+                            throw new Exception(result.getRespMsg());
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        baseview.addCouponSuccessResult(throwable.getMessage());
+                        baseview.couponFailedResult(throwable.getMessage());
                     }
                 });
         addSubscription(disposable);
@@ -127,13 +126,37 @@ public class CouponPresenter extends BasePresenter<ICouponView> {
                         if(Contents.SUCCESS_CODE.equals(result.getRespCode())) {
 
                         }else {
-                            throw new Exception("删除失败,请稍后重试！");
+                            throw new Exception(result.getRespMsg());
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        baseview.addCouponSuccessResult(throwable.getMessage());
+                        baseview.couponFailedResult(throwable.getMessage());
+                    }
+                });
+        addSubscription(disposable);
+    }
+
+    public void uploadFile(MultipartBody.Part body, final int type) {
+        Disposable disposable = ApiService.getApi().uploadFile(body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        String json = responseBody.string();
+                        CommonResult result = new Gson().fromJson(json,CommonResult.class);
+                        if(Contents.SUCCESS_CODE.equals(result.getRespCode())) {
+                            baseview.uploadFileResult(result,type);
+                        }else {
+                            throw new Exception(result.getRespMsg());
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        baseview.couponFailedResult(throwable.getMessage());
                     }
                 });
         addSubscription(disposable);

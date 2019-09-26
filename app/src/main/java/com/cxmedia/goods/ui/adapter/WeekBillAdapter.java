@@ -5,25 +5,26 @@ import android.text.TextUtils;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.cxmedia.goods.MVP.model.OrderCategroyResult;
 import com.cxmedia.goods.MVP.model.OrderInfoListResult;
 import com.cxmedia.goods.R;
 import com.cxmedia.goods.utils.CalendarUtil;
 
 import java.util.List;
 
-public class BillAdapter extends BaseQuickAdapter<OrderInfoListResult.RowsBean, BaseViewHolder> {
+public class WeekBillAdapter extends BaseQuickAdapter<OrderCategroyResult.PageDataBean.RowsBean, BaseViewHolder> {
 
     private boolean isShowDate = false;
-    private List<OrderInfoListResult.RowsBean> mList;
+    private List<OrderCategroyResult.PageDataBean.RowsBean> mList;
 
-    public BillAdapter(@Nullable List<OrderInfoListResult.RowsBean> data, boolean isShowDate) {
+    public WeekBillAdapter(@Nullable List<OrderCategroyResult.PageDataBean.RowsBean> data, boolean isShowDate) {
         super(R.layout.activity_bill_item, data);
         this.isShowDate = isShowDate;
         this.mList = data;
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, OrderInfoListResult.RowsBean item) {
+    protected void convert(BaseViewHolder helper, OrderCategroyResult.PageDataBean.RowsBean item) {
         if (isShowDate) {
             helper.setGone(R.id.re_date, true);
         } else {

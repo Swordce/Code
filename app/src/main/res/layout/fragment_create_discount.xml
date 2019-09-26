@@ -38,7 +38,7 @@
                     android:layout_height="match_parent"
                     android:background="@null"
                     android:textColor="@color/theme_color"
-                    android:text="8.8"/>
+                    android:text="0"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
                     android:layout_height="match_parent"
                     android:background="@null"
                     android:textColor="@color/theme_color"
-                    android:text="500"/>
+                    android:text="0"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -93,7 +93,8 @@
                 android:layout_height="50dp"
                 android:gravity="center_vertical"
                 android:layout_marginStart="20dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -139,8 +140,8 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="20dp"
                     android:background="@null"
-                    android:hint="例如：消费满100元可使用"/>
-
+                    android:inputType="number"
+                    android:hint="0元"/>
 
             </LinearLayout>
 
@@ -165,7 +166,7 @@
                     android:layout_weight="1"
                     android:textColor="@android:color/black"
                     android:layout_marginLeft="20dp"
-                    android:text="代金券使用起始日"/>
+                    android:text="折扣券使用起始日"/>
 
 
                 <TextView
@@ -174,7 +175,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:layout_marginEnd="10dp"
-                    android:text="次日可使用"/>
+                    android:text=""/>
 
                 <ImageView
                     android:layout_width="18dp"
@@ -200,7 +201,7 @@
                     android:layout_weight="1"
                     android:textColor="@android:color/black"
                     android:layout_marginLeft="20dp"
-                    android:text="代金券使用时间和期限"/>
+                    android:text="折扣券使用时间和期限"/>
 
                 <TextView
                     android:id="@+id/tv_time"
@@ -208,7 +209,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:layout_marginEnd="10dp"
-                    android:text="2019-1-1~1019-1-2"/>
+                    android:text=""/>
 
                 <ImageView
                     android:layout_width="18dp"
@@ -245,17 +246,4 @@
 
     </ScrollView>
 
-
-
-    <TextView
-        android:id="@+id/tv_create_coupon"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:textSize="18sp"
-        android:background="@color/theme_color"
-        android:textColor="@color/color_white"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:visibility="visible"
-        android:text="立即发放"/>
 </RelativeLayout>

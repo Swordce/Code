@@ -115,7 +115,7 @@
                 android:paddingRight="18dp"
                 android:textAllCaps="true"
                 android:textColor="@color/slycalendar_defHeaderColor"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
             <FrameLayout
                 android:layout_width="match_parent"
