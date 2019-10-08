@@ -141,7 +141,7 @@ public class DisAmtFragment extends BaseMvpFragment<CouponPresenter> implements 
         }
         tvUseStartDate.setText(util.getDateString(result.getEffectiveDate()));
         tvUseDate.setText(util.getDateString(result.getEffectiveDate())+"~"+util.getDateString(result.getExpireDate()));
-        tvUserRequire.setText("消费满"+ result.getSubtractionAmt()+"元可用");
+        tvUserRequire.setText("消费满"+ result.getFullAmt()+"元可用");
         tvHaveUse.setText(result.getUseNum() +"张");
         tvHaveShare.setText(result.getShareNum()+"次");
     }

@@ -24,19 +24,20 @@
                 android:background="@color/color_white">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:textColor="@android:color/black"
                     android:layout_marginLeft="20dp"
                     android:text="代金券"/>
 
                 <EditText
                     android:id="@+id/et_discount_money"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="right|center"
                     android:background="@null"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:textColor="@color/theme_color"
                     android:hint="0"
                     android:text=""/>
@@ -65,17 +66,18 @@
                 android:background="@color/color_white">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:textColor="@android:color/black"
                     android:layout_marginLeft="20dp"
                     android:text="代金券数量"/>
 
                 <EditText
                     android:id="@+id/et_discount_count"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="right|center"
                     android:background="@null"
                     android:inputType="number"
                     android:textColor="@color/theme_color"
@@ -126,9 +128,8 @@
                 android:background="@color/color_white">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:textColor="@android:color/black"
                     android:layout_marginLeft="20dp"
                     android:text="使用条件"/>
@@ -139,6 +140,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="end|center_vertical"
+                    android:textColor="@color/theme_color"
                     android:inputType="number"
                     android:background="@null"
                     android:hint="0"/>
@@ -147,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:layout_marginEnd="20dp"
-                    android:text="张"/>
+                    android:text="元"/>
 
             </LinearLayout>
 

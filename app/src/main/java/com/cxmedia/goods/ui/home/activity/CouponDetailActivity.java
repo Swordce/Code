@@ -34,9 +34,9 @@ public class CouponDetailActivity extends BaseMvpActivity<CouponPresenter> imple
         String couponType = intent.getStringExtra("couponType");
         String couponId = intent.getStringExtra("couponId");
         if(couponType.equals("1") || couponType.contains("01")) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fm_content, FullAmtFragment.getInstance(couponId)).commit();
-        }else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fm_content, DisAmtFragment.getInstance(couponId)).commit();
+        }else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fm_content, FullAmtFragment.getInstance(couponId)).commit();
         }
     }
 

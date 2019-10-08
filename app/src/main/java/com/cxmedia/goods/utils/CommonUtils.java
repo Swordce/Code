@@ -8,7 +8,7 @@ import java.util.Date;
 public class CommonUtils {
 
     public static int compareDate(String begin, String end) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date beginDate = df.parse(begin);
             Date endDate = df.parse(end);

@@ -134,14 +134,14 @@ public class FullAmtFragment extends BaseMvpFragment<CouponPresenter> implements
     public void couponDetailResult(CouponListResult.ListBean result) {
         CalendarUtil util = new CalendarUtil();
         tvCouponCount.setText(result.getCouponNum()+"");
-        if(result.getFullAmt() == null || TextUtils.isEmpty(result.getFullAmt())) {
+        if(result.getSubtractionAmt() == null || TextUtils.isEmpty(result.getSubtractionAmt())) {
             tvCouponMoney.setText("0");
         }else {
-            tvCouponMoney.setText(result.getFullAmt());
+            tvCouponMoney.setText(result.getSubtractionAmt());
         }
         tvUseStartDate.setText(util.getDateString(result.getEffectiveDate()));
         tvUseDate.setText(util.getDateString(result.getEffectiveDate())+"~"+util.getDateString(result.getExpireDate()));
-        tvUserRequire.setText("消费满"+ result.getSubtractionAmt()+"元可用");
+        tvUserRequire.setText("消费满"+ result.getFullAmt()+"元可用");
         tvHaveUse.setText(result.getUseNum() +"张");
         tvHaveShare.setText(result.getShareNum()+"次");
     }

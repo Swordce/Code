@@ -46,6 +46,7 @@ public class CouponActivity extends BaseMvpActivity<CouponPresenter> implements 
 
     private CouponPresenter couponPresenter;
     private int deletePos = -1;
+    private String mchtNo;
 
     @Override
     public void initView() {
@@ -60,6 +61,12 @@ public class CouponActivity extends BaseMvpActivity<CouponPresenter> implements 
 
     @Override
     public void getData() {
+        mchtNo = (String) Cache.get("mchtNo");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         String mchtNo = (String) Cache.get("mchtNo");
         TreeMap<String, String> map = RequestUtils.couponListStr(mchtNo);
         couponPresenter.getCouponList(RetrofitFactory.getRequestBody(new Gson().toJson(map)));

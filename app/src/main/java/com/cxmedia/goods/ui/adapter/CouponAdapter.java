@@ -21,11 +21,21 @@ public class CouponAdapter extends BaseQuickAdapter<CouponListResult.ListBean,Ba
     @Override
     protected void convert(BaseViewHolder helper, CouponListResult.ListBean item) {
         GlideApp.with(mContext).load(item.getThumbnail()).placeholder(R.drawable.icon).into((ImageView)helper.getView(R.id.iv_thumb));
-        if(!TextUtils.isEmpty(item.getFullAmt())) {
-            helper.setText(R.id.tv_coupon_name,"优惠券立减"+item.getFullAmt()+"元");
+        if(item.getCouponType().equals("1")) {
+            if(!TextUtils.isEmpty(item.getDiscount())) {
+
+                helper.setText(R.id.tv_coupon_name,"折扣券立打"+item.getDiscount()+"折");
+            }else {
+                helper.setText(R.id.tv_coupon_name,"折扣券立打0元");
+            }
         }else {
-            helper.setText(R.id.tv_coupon_name,"优惠券立减0元");
+            if(!TextUtils.isEmpty(item.getSubtractionAmt())) {
+                helper.setText(R.id.tv_coupon_name,"优惠券立减"+item.getSubtractionAmt()+"元");
+            }else {
+                helper.setText(R.id.tv_coupon_name,"优惠券立减0元");
+            }
         }
+
         helper.addOnClickListener(R.id.tv_look)
                 .addOnClickListener(R.id.tv_delete);
     }

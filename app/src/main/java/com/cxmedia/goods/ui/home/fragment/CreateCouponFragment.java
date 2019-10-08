@@ -20,6 +20,7 @@ import com.cxmedia.goods.MVP.presenter.CouponPresenter;
 import com.cxmedia.goods.MVP.view.ICouponView;
 import com.cxmedia.goods.R;
 import com.cxmedia.goods.ui.base.BaseMvpFragment;
+import com.cxmedia.goods.utils.AppManager;
 import com.cxmedia.goods.utils.Cache;
 import com.cxmedia.goods.utils.CommonUtils;
 import com.cxmedia.goods.utils.GlideApp;
@@ -82,7 +83,7 @@ public class CreateCouponFragment extends BaseMvpFragment<CouponPresenter> imple
     @Override
     public void initView() {
         mchtNo = (String) Cache.get("mchtNo");
-        empNo = (String)Cache.get("empNo");
+        empNo = (String) Cache.get("empNo");
     }
 
     @Override
@@ -122,7 +123,7 @@ public class CreateCouponFragment extends BaseMvpFragment<CouponPresenter> imple
         useDialog.show();
     }
 
-    @OnClick({R.id.ll_use_day, R.id.ll_use_time,R.id.iv_thumb,R.id.iv_detail})
+    @OnClick({R.id.ll_use_day, R.id.ll_use_time, R.id.iv_thumb, R.id.iv_detail})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_use_day:
@@ -140,14 +141,26 @@ public class CreateCouponFragment extends BaseMvpFragment<CouponPresenter> imple
 
                             @Override
                             public void onDataSelected(Calendar firstDate, Calendar secondDate, int hours, int minutes) {
-                                String startTime = firstDate.get(Calendar.YEAR) + "-" + (firstDate.get(Calendar.MONTH) + 1) + "-" + firstDate.get(Calendar.DAY_OF_MONTH);
+                                String h = "";
+                                String m = "";
+                                if (hours == 0) {
+                                    h = "00";
+                                } else {
+                                    h = hours + "";
+                                }
+                                if (minutes == 0) {
+                                    m = "00";
+                                } else {
+                                    m = minutes + "";
+                                }
+                                String startTime = firstDate.get(Calendar.YEAR) + "-" + (firstDate.get(Calendar.MONTH) + 1) + "-" + firstDate.get(Calendar.DAY_OF_MONTH) + " " + h + ":" + m + ":00";
                                 tvUseDay.setText(startTime);
                             }
                         })
                         .show(getFragmentManager(), "TAG_SLYCALENDAR");
                 break;
             case R.id.ll_use_time:
-                 new SlyCalendarDialog()
+                new SlyCalendarDialog()
                         .setSingle(false)
                         .setHeaderColor(ContextCompat.getColor(getActivity(), R.color.theme_color))
                         .setSelectedColor(ContextCompat.getColor(getActivity(), R.color.theme_color))
@@ -161,16 +174,29 @@ public class CreateCouponFragment extends BaseMvpFragment<CouponPresenter> imple
 
                             @Override
                             public void onDataSelected(Calendar firstDate, Calendar secondDate, int hours, int minutes) {
-                                String startTime = firstDate.get(Calendar.YEAR) + "-" + (firstDate.get(Calendar.MONTH) + 1) + "-" + firstDate.get(Calendar.DAY_OF_MONTH);
-                                String endTime ="";
-                                if(secondDate != null) {
-                                    endTime = secondDate.get(Calendar.YEAR) + "-" + (secondDate.get(Calendar.MONTH) + 1) +"-" + secondDate.get(Calendar.DAY_OF_MONTH);
+                                String startTime = "";
+                                String endTime = "";
+                                String h = "";
+                                String m = "";
+                                if (hours == 0) {
+                                    h = "00";
+                                } else {
+                                    h = hours + "";
                                 }
-                                if(CommonUtils.compareDate(startTime,CommonUtils.getDay())  < 1) {
-                                    if(!TextUtils.isEmpty(endTime)) {
+                                if (minutes == 0) {
+                                    m = "00";
+                                } else {
+                                    m = minutes + "";
+                                }
+                                startTime = firstDate.get(Calendar.YEAR) + "-" + (firstDate.get(Calendar.MONTH) + 1) + "-" + firstDate.get(Calendar.DAY_OF_MONTH) + " " + h + ":" + m + ":00";
+                                if (secondDate != null) {
+                                    endTime = secondDate.get(Calendar.YEAR) + "-" + (secondDate.get(Calendar.MONTH) + 1) + "-" + secondDate.get(Calendar.DAY_OF_MONTH) + " " + h + ":" + m + ":00";
+                                }
+                                if (CommonUtils.compareDate(startTime, CommonUtils.getDay()) < 1) {
+                                    if (!TextUtils.isEmpty(endTime)) {
                                         expirdate = endTime;
                                         tvTime.setText(startTime + " - " + endTime);
-                                    }else {
+                                    } else {
                                         expirdate = startTime;
                                         tvTime.setText(CommonUtils.getDay() + " - " + startTime);
                                     }
@@ -221,13 +247,13 @@ public class CreateCouponFragment extends BaseMvpFragment<CouponPresenter> imple
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
-            List<String> pathList  = Matisse.obtainPathResult(data);
-            if(pathList.size() > 0 ) {
+            List<String> pathList = Matisse.obtainPathResult(data);
+            if (pathList.size() > 0) {
                 RequestBody requestFile =
                         RequestBody.create(MediaType.parse("multipart/form-data"), new File(pathList.get(0)));
                 MultipartBody.Part body =
-                        MultipartBody.Part.createFormData("file", System.currentTimeMillis() +".png", requestFile);
-                couponPresenter.uploadFile(body,imageType);
+                        MultipartBody.Part.createFormData("file", System.currentTimeMillis() + ".png", requestFile);
+                couponPresenter.uploadFile(body, imageType);
             }
         }
 
@@ -261,21 +287,22 @@ public class CreateCouponFragment extends BaseMvpFragment<CouponPresenter> imple
 
     @Override
     public void addCouponSuccessResult(String result) {
-
+        ToastUtils.showShortToast(getActivity(),result);
+        AppManager.getAppManager().finishActivity();
     }
 
     @Override
     public void couponFailedResult(String errorMsg) {
-        ToastUtils.showShortToast(getActivity(),errorMsg);
+        ToastUtils.showShortToast(getActivity(), errorMsg);
     }
 
     @Override
-    public void uploadFileResult(CommonResult result,int type) {
-        if(type == 1) {
+    public void uploadFileResult(CommonResult result, int type) {
+        if (type == 1) {
             thumbnail = result.getPath();
             GlideApp.with(this).load(thumbnail).into(ivThumb);
 
-        }else {
+        } else {
             poster = result.getPath();
             GlideApp.with(this).load(poster).into(ivDetail);
         }
@@ -283,7 +310,7 @@ public class CreateCouponFragment extends BaseMvpFragment<CouponPresenter> imple
 
     @Override
     public void setPresenter(CouponPresenter presenter) {
-        if(presenter == null) {
+        if (presenter == null) {
             couponPresenter = new CouponPresenter();
             couponPresenter.attachView(this);
         }
@@ -294,9 +321,9 @@ public class CreateCouponFragment extends BaseMvpFragment<CouponPresenter> imple
         String discountCount = etDiscountCount.getText().toString();
         String userMethod = etUseMethod.getText().toString();
         String useDay = tvUseDay.getText().toString();
-        Map<String,String> map = RequestUtils.addCouponStr(mchtNo,"2",
-                dicountMoney,"0",discountCount,userMethod,
-                useDay,expirdate,thumbnail,poster,empNo);
+        Map<String, String> map = RequestUtils.addCouponStr(mchtNo, "2",
+                dicountMoney, "0", discountCount, userMethod,
+                useDay, expirdate, thumbnail, poster, empNo);
 
         RequestBody body = RetrofitFactory.getRequestBody(new Gson().toJson(map));
         couponPresenter.addCoupon(body);
